@@ -1,4 +1,4 @@
-use async_graphql::{EmptySubscription, Object, ID};
+use async_graphql::{EmptySubscription, Object, ID, FieldResult};
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::{extract::Extension, routing::post, Router};
 use http::{header::CONTENT_TYPE, HeaderValue, Method};
@@ -7,6 +7,7 @@ use tower_http::{compression::CompressionLayer, cors::CorsLayer};
 use crate::thing::{get_thing, CreateThing, Thing};
 
 mod thing;
+mod cat;
 
 struct Query;
 
@@ -22,6 +23,12 @@ impl Query {
     #[graphql(entity)]
     async fn thing_entity_by_id(&self, id: ID) -> Option<Thing> {
         get_thing(id)
+    }
+
+    // https://catfact.ninja/fact
+
+    async fn cat_fact(&self) -> FieldResult<String> {
+        cat::get_cat_fact().await
     }
 }
 
