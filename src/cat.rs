@@ -1,11 +1,11 @@
-use async_graphql::FieldResult;
+use async_graphql::{FieldResult, SimpleObject};
 
-#[derive(serde::Deserialize)]
-struct CatFactResponse {
+#[derive(serde::Deserialize, SimpleObject)]
+pub(crate) struct CatFactResponse {
     fact: String,
 }
 
-pub(crate) async fn get_cat_fact() -> FieldResult<String> {
+pub(crate) async fn get_cat_fact() -> FieldResult<CatFactResponse> {
     reqwest::get("https://catfact.ninja/fact")
         .await
         .map_err(|err| {
@@ -17,5 +17,5 @@ pub(crate) async fn get_cat_fact() -> FieldResult<String> {
         .map_err(|err| {
             tracing::error!(?err, "Error parsing cat fact");
             async_graphql::FieldError::new("Error parsing cat fact")
-        }).map(|response| response.fact)
+        })
 }

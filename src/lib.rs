@@ -1,6 +1,7 @@
 use async_graphql::{EmptySubscription, Object, ID, FieldResult};
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::{extract::Extension, routing::post, Router};
+use cat::CatFactResponse;
 use http::{header::CONTENT_TYPE, HeaderValue, Method};
 use tower_http::{compression::CompressionLayer, cors::CorsLayer};
 
@@ -27,7 +28,7 @@ impl Query {
 
     // https://catfact.ninja/fact
 
-    async fn cat_fact(&self) -> FieldResult<String> {
+    async fn cat_fact(&self) -> FieldResult<CatFactResponse> {
         cat::get_cat_fact().await
     }
 }
